@@ -90,8 +90,7 @@ origin_y = lattice_point + ((total_yAxis_length / 2) * move_distance)
 
 # Random coordinates for the treasure
 random_x = random.randint(0, X_AXIS_MAX)
-random_y = 0
-#random_y = random.randint(0, Y_AXIS_MAX)
+random_y = random.randint(0, Y_AXIS_MAX)
 
 while run:  # Only include critical code within this loop
     # Set color of the main menu window
@@ -194,15 +193,15 @@ while run:  # Only include critical code within this loop
             false_x1 = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
             false_y1 = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
 
-            # False treasure location 1A - If treasure = false 1. When (0, y)
+            # False treasure location 1A - If False treasure location 1 is the same as Treasure. When (0, y)
             false_x1A = lattice_point + ((abs(X_AXIS_MIN) - random_y) * move_distance)
-            false_y1A = lattice_point + ((Y_AXIS_MAX - random_x) * move_distance)
+            false_y1A = origin_y
 
             # False treasure location 2 - Quadrant IV (x, -y) blue
             false_x2 = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
             false_y2 = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
 
-            # False treasure location 2A - If treasure = false 2. When (x, 0)
+            # False treasure location 2A - If False treasure location 2 is the same as Treasure. When (x, 0)
             false_x2A = origin_x
             false_y2A = lattice_point + ((Y_AXIS_MAX + random_x) * move_distance)
 
