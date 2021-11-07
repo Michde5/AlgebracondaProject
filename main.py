@@ -2,6 +2,7 @@ import pygame, sys
 import random
 import colors
 import fonts
+from pygame import mixer
 
 # Initialize pygame
 pygame.init()
@@ -30,6 +31,10 @@ HEIGHT = move_distance * (total_yAxis_length + 2)       # Height of screen
 # Background of game play screen
 background = pygame.image.load("assets/background.jpg")
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+
+# Screen1 Background Music
+mixer.music.load("assets/screen1.ogg")
+mixer.music.play(-1, 0.0)
 
 # Title and icon on top window bar
 icon = pygame.image.load("assets/snake.png")
@@ -85,7 +90,8 @@ origin_y = lattice_point + ((total_yAxis_length / 2) * move_distance)
 
 # Random coordinates for the treasure
 random_x = random.randint(0, X_AXIS_MAX)
-random_y = random.randint(0, Y_AXIS_MAX)
+random_y = 0
+#random_y = random.randint(0, Y_AXIS_MAX)
 
 while run:  # Only include critical code within this loop
     # Set color of the main menu window
@@ -93,6 +99,10 @@ while run:  # Only include critical code within this loop
 
     if start_button.draw():
         playgame = True
+
+        # Background Sound
+        mixer.music.load("assets/catch.WAV")
+        mixer.music.play(-1, 0.0)
 
     if exit_button.draw():
         run = False
@@ -155,6 +165,8 @@ while run:  # Only include critical code within this loop
                 pygame.draw.rect(screen, colors.blue, pygame.Rect(origin_x, origin_y, GRID_SIZE, GRID_SIZE))
             else:
                 capture = True      # Capture flag set to true, so diamond does not draw again after capture
+                diamond_hit = mixer.Sound("assets/diamond_hit.WAV")
+                diamond_hit.play()
 
         # Player has captured the diamond but has not found treasure
         elif (capture == True) and (treasure_located == False):
@@ -175,10 +187,46 @@ while run:  # Only include critical code within this loop
             # Create treasure chest location
             treasure_x = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
             treasure_y = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
+            # print("Treasure:", treasure_x, treasure_y)
 
-            # Draw chest if not yet located
+            # Create false treasure locations
+            # False treasure location 1 - Quadrant II (-x, y) sandy brown
+            false_x1 = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
+            false_y1 = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
+
+            # False treasure location 1A - If treasure = false 1. When (0, y)
+            false_x1A = lattice_point + ((abs(X_AXIS_MIN) - random_y) * move_distance)
+            false_y1A = lattice_point + ((Y_AXIS_MAX - random_x) * move_distance)
+
+            # False treasure location 2 - Quadrant IV (x, -y) blue
+            false_x2 = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
+            false_y2 = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
+
+            # False treasure location 2A - If treasure = false 2. When (x, 0)
+            false_x2A = origin_x
+            false_y2A = lattice_point + ((Y_AXIS_MAX + random_x) * move_distance)
+
+            # False treasure location 3 - Quadrant I (y, x) black
+            false_x3 = lattice_point + ((abs(X_AXIS_MIN) + random_y) * move_distance)
+            false_y3 = lattice_point + ((Y_AXIS_MAX - random_x) * move_distance)
+
+            # Draw treasure chests
             if ((player_x != treasure_x) or (player_y != treasure_y)):
+                # If Treasure = False treasure 1 location
+                if ((treasure_x == false_x1) or (treasure_y != false_y1)):
+                    pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1A, false_y1A, GRID_SIZE, GRID_SIZE))
+                else:
+                    pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1, false_y1, GRID_SIZE, GRID_SIZE))
+
+                # If Treasure = False treasure 2 location
+                if ((treasure_x != false_x2) or (treasure_y == false_y2)):
+                    pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2A, false_y2A, GRID_SIZE, GRID_SIZE))
+                else:
+                    pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2, false_y2, GRID_SIZE, GRID_SIZE))
+
+                pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3, false_y3, GRID_SIZE, GRID_SIZE))
                 pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
+
             else:
                 treasure_located = True
 
