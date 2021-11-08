@@ -186,44 +186,52 @@ while run:  # Only include critical code within this loop
             # Create treasure chest location
             treasure_x = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
             treasure_y = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
-            # print("Treasure:", treasure_x, treasure_y)
 
             # Create false treasure locations
-            # False treasure location 1 - Quadrant II (-x, y) sandy brown
+            # False Treasure Location 1 - Quadrant II (-x, y) sandy brown
             false_x1 = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
             false_y1 = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
 
-            # False treasure location 1A - If False treasure location 1 is the same as Treasure. When (0, y)
+            # False Treasure Location 1A - Alternate location if False Treasure 1 is the same as Treasure. When (0, y).
             false_x1A = lattice_point + ((abs(X_AXIS_MIN) - random_y) * move_distance)
             false_y1A = origin_y
 
-            # False treasure location 2 - Quadrant IV (x, -y) blue
+            # False Treasure Location 2 - Quadrant IV (x, -y) blue
             false_x2 = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
             false_y2 = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
 
-            # False treasure location 2A - If False treasure location 2 is the same as Treasure. When (x, 0)
+            # False Treasure Location 2A - Alternate location if False Treasure 2 is the same as Treasure. When (x, 0).
             false_x2A = origin_x
             false_y2A = lattice_point + ((Y_AXIS_MAX + random_x) * move_distance)
 
-            # False treasure location 3 - Quadrant I (y, x) black
+            # False Treasure Location 3 - Quadrant I (y, x) black
             false_x3 = lattice_point + ((abs(X_AXIS_MIN) + random_y) * move_distance)
             false_y3 = lattice_point + ((Y_AXIS_MAX - random_x) * move_distance)
 
+            # False Treasure Location 3A - If False treasure location 3 is the same as Treasure. When x = y.
+            false_x3A = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
+            false_y3A = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
+
             # Draw treasure chests
             if ((player_x != treasure_x) or (player_y != treasure_y)):
-                # If Treasure = False treasure 1 location
+                # Draw False treasure 1 location. Check if False Treasure Location 1 is the same as Treasure.
                 if ((treasure_x == false_x1) or (treasure_y != false_y1)):
                     pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1A, false_y1A, GRID_SIZE, GRID_SIZE))
                 else:
                     pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1, false_y1, GRID_SIZE, GRID_SIZE))
 
-                # If Treasure = False treasure 2 location
+                # Draw False treasure 2 location. Check if False Treasure Location 2 is the same as Treasure.
                 if ((treasure_x != false_x2) or (treasure_y == false_y2)):
                     pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2A, false_y2A, GRID_SIZE, GRID_SIZE))
                 else:
                     pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2, false_y2, GRID_SIZE, GRID_SIZE))
 
-                pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3, false_y3, GRID_SIZE, GRID_SIZE))
+                # Draw False treasure 3 location. Check if False Treasure Location 3 is the same as Treasure.
+                if ((treasure_x == false_x3) or (treasure_y == false_y3)):
+                    pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3A, false_y3A, GRID_SIZE, GRID_SIZE))
+                else:
+                    pygame.draw.rect(screen, colors.white, pygame.Rect(false_x3, false_y3, GRID_SIZE, GRID_SIZE))
+
                 pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
 
             else:
