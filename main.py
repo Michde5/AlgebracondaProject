@@ -192,7 +192,8 @@ while run:  # Only include critical code within this loop
             false_x1 = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
             false_y1 = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
 
-            # False Treasure Location 1A - Alternate location if False Treasure 1 is the same as Treasure. When (0, y).
+            # False Treasure Location 1A - Alternate location if False Treasure 1 is the same as Treasure.
+            # Flagged when (0, y). Alternate is plotted at (-y, 0)
             false_x1A = lattice_point + ((abs(X_AXIS_MIN) - random_y) * move_distance)
             false_y1A = origin_y
 
@@ -200,7 +201,8 @@ while run:  # Only include critical code within this loop
             false_x2 = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
             false_y2 = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
 
-            # False Treasure Location 2A - Alternate location if False Treasure 2 is the same as Treasure. When (x, 0).
+            # False Treasure Location 2A - Alternate location if False Treasure 2 is the same as Treasure.
+            # Flagged when (x, 0). Alternate is plotted at (0, -x)
             false_x2A = origin_x
             false_y2A = lattice_point + ((Y_AXIS_MAX + random_x) * move_distance)
 
@@ -209,30 +211,36 @@ while run:  # Only include critical code within this loop
             false_y3 = lattice_point + ((Y_AXIS_MAX - random_x) * move_distance)
 
             # False Treasure Location 3A - If False treasure location 3 is the same as Treasure. When x = y.
+            # Flagged when x = y. Alternate is plotted at (-x, -y)
             false_x3A = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
             false_y3A = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
 
             # Draw treasure chests
             if ((player_x != treasure_x) or (player_y != treasure_y)):
-                # Draw False treasure 1 location. Check if False Treasure Location 1 is the same as Treasure.
+                # Draw True Treasure Chest
+                pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
+
+                # Draw False Treasure Chests
+                # If False Treasure Location 1 is the same as Treasure, draw Alternate location at (-y, 0)
                 if ((treasure_x == false_x1) or (treasure_y != false_y1)):
                     pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1A, false_y1A, GRID_SIZE, GRID_SIZE))
+                # Else draw False Treasure 1 location - Quadrant II (-x, y)
                 else:
                     pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1, false_y1, GRID_SIZE, GRID_SIZE))
 
-                # Draw False treasure 2 location. Check if False Treasure Location 2 is the same as Treasure.
+                # If False Treasure Location 2 is the same as Treasure, draw Alternate location at (0, -x)
                 if ((treasure_x != false_x2) or (treasure_y == false_y2)):
                     pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2A, false_y2A, GRID_SIZE, GRID_SIZE))
+                # Else draw False Treasure 2 location - Quadrant IV (x, -y)
                 else:
                     pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2, false_y2, GRID_SIZE, GRID_SIZE))
 
-                # Draw False treasure 3 location. Check if False Treasure Location 3 is the same as Treasure.
+                # If False Treasure Location 3 is the same as Treasure, draw Alternate location at (-x, -y)
                 if ((treasure_x == false_x3) or (treasure_y == false_y3)):
                     pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3A, false_y3A, GRID_SIZE, GRID_SIZE))
+                # Else draw False Treasure 3 location - Quadrant I (y, x)
                 else:
-                    pygame.draw.rect(screen, colors.white, pygame.Rect(false_x3, false_y3, GRID_SIZE, GRID_SIZE))
-
-                pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
+                    pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3, false_y3, GRID_SIZE, GRID_SIZE))
 
             else:
                 treasure_located = True
