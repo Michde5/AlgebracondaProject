@@ -13,6 +13,7 @@ run = True
 playgame = False
 capture = False             # Player has not yet captured diamond. Capture flag set to false.
 treasure_located = False    # Player has not yet brought diamond to treasure chest. Treasure flag set to false.
+false_treasure = False      # Player has not captured a false treasure
 
 # Specs for game play screen
 GRID_SIZE = 32      # Space between grid lines
@@ -42,6 +43,17 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 pygame.display.set_caption("ALGEBRACONDA")
 pygame.display.set_icon(icon)
+
+# Scoreboard Setup
+score_value = 0
+
+scoreTxt_X = move_distance * (total_xAxis_length - 20)
+scoreTxt_Y = move_distance * (total_yAxis_length + 1)
+
+def show_score(WIDTH, HEIGHT):
+    score = fonts.score_font.render("Score: " + str(score_value), True, colors.dred, colors.white)
+    screen.blit(score, (WIDTH, HEIGHT))
+
 
 # load button images
 start_img = pygame.image.load("assets/start_btn.png").convert_alpha()
@@ -92,6 +104,39 @@ origin_y = lattice_point + ((total_yAxis_length / 2) * move_distance)
 random_x = random.randint(0, X_AXIS_MAX)
 random_y = random.randint(0, Y_AXIS_MAX)
 
+# Create treasure chest location
+treasure_x = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
+treasure_y = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
+
+# Create false treasure locations
+# False Treasure Location 1 - Quadrant II (-x, y) sandy brown
+false_x1 = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
+false_y1 = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
+
+# False Treasure Location 1A - Alternate location if False Treasure 1 is the same as Treasure.
+# Flagged when (0, y). Alternate is plotted at (-y, 0)
+false_x1A = lattice_point + ((abs(X_AXIS_MIN) - random_y) * move_distance)
+false_y1A = origin_y
+
+# False Treasure Location 2 - Quadrant IV (x, -y) blue
+false_x2 = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
+false_y2 = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
+
+# False Treasure Location 2A - Alternate location if False Treasure 2 is the same as Treasure.
+# Flagged when (x, 0). Alternate is plotted at (0, -x)
+false_x2A = origin_x
+false_y2A = lattice_point + ((Y_AXIS_MAX + random_x) * move_distance)
+
+# False Treasure Location 3 - Quadrant I (y, x) black
+false_x3 = lattice_point + ((abs(X_AXIS_MIN) + random_y) * move_distance)
+false_y3 = lattice_point + ((Y_AXIS_MAX - random_x) * move_distance)
+
+# False Treasure Location 3A - If False treasure location 3 is the same as Treasure. When x = y.
+# Flagged when x = y. Alternate is plotted at (-x, -y)
+false_x3A = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
+false_y3A = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
+
+
 while run:  # Only include critical code within this loop
     # Set color of the main menu window
     screen.fill(colors.sandy_brown)
@@ -103,12 +148,16 @@ while run:  # Only include critical code within this loop
         mixer.music.load("assets/catch.WAV")
         mixer.music.play(-1, 0.0)
 
+
     if exit_button.draw():
         run = False
 
     if playgame:
         # Background Image
         screen.blit(background, (0, 0))
+
+        # Display Score
+        show_score(scoreTxt_X, scoreTxt_Y)
 
         # Draw vertical grid lines
         for i in range(-1, WIDTH, move_distance):
@@ -168,7 +217,7 @@ while run:  # Only include critical code within this loop
                 diamond_hit.play()
 
         # Player has captured the diamond but has not found treasure
-        elif (capture == True) and (treasure_located == False):
+        elif (capture == True) and (treasure_located == False) and (false_treasure == False):
             # Display capture message
             capture_msg = str('Congratulations! You have captured the DIAMOND!')
             capture_text = fonts.capture_font.render(capture_msg, True, colors.blue, colors.sandy_brown)
@@ -183,69 +232,73 @@ while run:  # Only include critical code within this loop
             instruct_textRect.center = (origin_x, GRID_SIZE)
             screen.blit(instruct_text, instruct_textRect)
 
-            # Create treasure chest location
-            treasure_x = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
-            treasure_y = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
-
-            # Create false treasure locations
-            # False Treasure Location 1 - Quadrant II (-x, y) sandy brown
-            false_x1 = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
-            false_y1 = lattice_point + ((Y_AXIS_MAX - random_y) * move_distance)
-
-            # False Treasure Location 1A - Alternate location if False Treasure 1 is the same as Treasure.
-            # Flagged when (0, y). Alternate is plotted at (-y, 0)
-            false_x1A = lattice_point + ((abs(X_AXIS_MIN) - random_y) * move_distance)
-            false_y1A = origin_y
-
-            # False Treasure Location 2 - Quadrant IV (x, -y) blue
-            false_x2 = lattice_point + ((abs(X_AXIS_MIN) + random_x) * move_distance)
-            false_y2 = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
-
-            # False Treasure Location 2A - Alternate location if False Treasure 2 is the same as Treasure.
-            # Flagged when (x, 0). Alternate is plotted at (0, -x)
-            false_x2A = origin_x
-            false_y2A = lattice_point + ((Y_AXIS_MAX + random_x) * move_distance)
-
-            # False Treasure Location 3 - Quadrant I (y, x) black
-            false_x3 = lattice_point + ((abs(X_AXIS_MIN) + random_y) * move_distance)
-            false_y3 = lattice_point + ((Y_AXIS_MAX - random_x) * move_distance)
-
-            # False Treasure Location 3A - If False treasure location 3 is the same as Treasure. When x = y.
-            # Flagged when x = y. Alternate is plotted at (-x, -y)
-            false_x3A = lattice_point + ((abs(X_AXIS_MIN) - random_x) * move_distance)
-            false_y3A = lattice_point + ((Y_AXIS_MAX + random_y) * move_distance)
-
-            # Draw treasure chests
+            # Player has not located the treasure
             if ((player_x != treasure_x) or (player_y != treasure_y)):
                 # Draw True Treasure Chest
                 pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
 
                 # Draw False Treasure Chests
+
                 # If False Treasure Location 1 is the same as Treasure, draw Alternate location at (-y, 0)
                 if ((treasure_x == false_x1) or (treasure_y != false_y1)):
                     pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1A, false_y1A, GRID_SIZE, GRID_SIZE))
+                    wrong_x1 = false_x1A
+                    wrong_y1 = false_y1A
                 # Else draw False Treasure 1 location - Quadrant II (-x, y)
                 else:
                     pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1, false_y1, GRID_SIZE, GRID_SIZE))
+                    wrong_x1 = false_x1
+                    wrong_y1 = false_y1
+
+                # False treasure 1 has been found
+                if ((player_x == wrong_x1) and (player_y == wrong_y1)):
+                    wrong_x = wrong_x1
+                    wrong_y = wrong_y1
+                    false_treasure = True
 
                 # If False Treasure Location 2 is the same as Treasure, draw Alternate location at (0, -x)
                 if ((treasure_x != false_x2) or (treasure_y == false_y2)):
                     pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2A, false_y2A, GRID_SIZE, GRID_SIZE))
+                    wrong_x2 = false_x2A
+                    wrong_y2 = false_y2A
                 # Else draw False Treasure 2 location - Quadrant IV (x, -y)
                 else:
                     pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2, false_y2, GRID_SIZE, GRID_SIZE))
+                    wrong_x2 = false_x2
+                    wrong_y2 = false_y2
+
+                # False treasure 2 has been found
+                if ((player_x == wrong_x2) and (player_y == wrong_y2)):
+                    wrong_x = wrong_x2
+                    wrong_y = wrong_y2
+                    false_treasure = True
 
                 # If False Treasure Location 3 is the same as Treasure, draw Alternate location at (-x, -y)
                 if ((treasure_x == false_x3) or (treasure_y == false_y3)):
                     pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3A, false_y3A, GRID_SIZE, GRID_SIZE))
+                    wrong_x3 = false_x3A
+                    wrong_y3 = false_y3A
                 # Else draw False Treasure 3 location - Quadrant I (y, x)
                 else:
                     pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3, false_y3, GRID_SIZE, GRID_SIZE))
+                    wrong_x3 = false_x3
+                    wrong_y3 = false_y3
 
-            else:
+                # False treasure 3 has been found
+                if ((player_x == wrong_x3) and (player_y == wrong_y3)):
+                    wrong_x = wrong_x3
+                    wrong_y = wrong_y3
+                    false_treasure = True
+
+            # True treasure has been found
+            elif ((player_x == treasure_x) or (player_y == treasure_y)):
                 treasure_located = True
+                diamond_hit = mixer.Sound("assets/diamond_hit.WAV")
+                diamond_hit.play()
+                score_value += 10
 
-        else:       # Treasure has been located
+        # Player has found the true treasure
+        elif (treasure_located == True):
             # Display success message
             success_msg = str('Congratulations!! You have plotted (' + str(random_x) + ', ' + str(random_y) + ').')
             success_text = fonts.success_font.render(success_msg, True, colors.green, colors.sandy_brown)
@@ -259,6 +312,21 @@ while run:  # Only include critical code within this loop
             level_textRect = level_text.get_rect()
             level_textRect.center = (WIDTH // 2, (HEIGHT // 2) + GRID_SIZE)
             screen.blit(level_text, level_textRect)
+
+            # Draw correct location for player to reflect
+            pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
+
+        # Player has found false treasure
+        elif (false_treasure == True):
+            # Display wrong plot message
+            failure_msg = str('Sorry!! You did not plot (' + str(random_x) + ', ' + str(random_y) + ').')
+            failure_text = fonts.success_font.render(failure_msg, True, colors.dred, colors.sandy_brown)
+            failure_textRect = failure_text.get_rect()
+            failure_textRect.center = (WIDTH // 2, GRID_SIZE)
+            screen.blit(failure_text, failure_textRect)
+
+            # Draw incorrect location for player to understand
+            pygame.draw.rect(screen, colors.white, pygame.Rect(wrong_x, wrong_y, GRID_SIZE, GRID_SIZE))
 
     click = False
     for event in pygame.event.get():
@@ -282,6 +350,7 @@ while run:  # Only include critical code within this loop
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
 
     pygame.display.update()
     clock.tick(60)  # Set the consistency of the speed
