@@ -93,8 +93,8 @@ start_button = Button(100, 200, start_img, 0.8)
 exit_button = Button(450, 200, exit_img, 0.8)
 
 # Set initial location for Algebraconda
-player_x = lattice_point
-player_y = lattice_point
+player_x = lattice_point + (6 * move_distance)
+player_y = lattice_point + (6 * move_distance)
 
 # Location of the origin and diamond
 origin_x = lattice_point + ((total_xAxis_length / 2) * move_distance)
@@ -204,13 +204,17 @@ while run:  # Only include critical code within this loop
             yMark_textRect.center = (origin_x, (move_distance * ypos) + origin_y + lattice_point)
             screen.blit(yMark_text, yMark_textRect)
 
-        # Create green square for Algebraconda. Rect Arguments (x-coord, y-coord, width, height)
-        pygame.draw.rect(screen, colors.green, pygame.Rect(player_x, player_y, GRID_SIZE, GRID_SIZE))
+        # Create green square for player. Rect Arguments (x-coord, y-coord, width, height)
+        #pygame.draw.rect(screen, colors.green, pygame.Rect(player_x, player_y, GRID_SIZE, GRID_SIZE))
+        sprite = pygame.image.load('assets/explorer.png')
+        sprite = pygame.transform.scale(sprite, (55, 55))
+        screen.blit(sprite, (player_x, player_y))
 
         # Create diamond at origin and draw when player has not captured diamond
         if capture == False:
             if ((player_x != origin_x) or (player_y != origin_y)):
-                pygame.draw.rect(screen, colors.blue, pygame.Rect(origin_x, origin_y, GRID_SIZE, GRID_SIZE))
+                #pygame.draw.rect(screen, colors.blue, pygame.Rect(origin_x, origin_y, GRID_SIZE, GRID_SIZE))
+                screen.blit(pygame.image.load('assets/diamond_blue_35x35.png'), (origin_x, origin_y))
             else:
                 capture = True      # Capture flag set to true, so diamond does not draw again after capture
                 diamond_hit = mixer.Sound("assets/diamond_hit.WAV")
@@ -235,18 +239,21 @@ while run:  # Only include critical code within this loop
             # Player has not located the treasure
             if ((player_x != treasure_x) or (player_y != treasure_y)):
                 # Draw True Treasure Chest
-                pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
+                #pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
+                screen.blit(pygame.image.load('assets/treasure chest0000.png'), (treasure_x, treasure_y))
 
                 # Draw False Treasure Chests
 
                 # If False Treasure Location 1 is the same as Treasure, draw Alternate location at (-y, 0)
                 if ((treasure_x == false_x1) or (treasure_y != false_y1)):
-                    pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1A, false_y1A, GRID_SIZE, GRID_SIZE))
+                    #pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1A, false_y1A, GRID_SIZE, GRID_SIZE))
+                    screen.blit(pygame.image.load('assets/treasure chest0000.png'), (false_x1A, false_y1A))
                     wrong_x1 = false_x1A
                     wrong_y1 = false_y1A
                 # Else draw False Treasure 1 location - Quadrant II (-x, y)
                 else:
-                    pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1, false_y1, GRID_SIZE, GRID_SIZE))
+                    #pygame.draw.rect(screen, colors.sandy_brown, pygame.Rect(false_x1, false_y1, GRID_SIZE, GRID_SIZE))
+                    screen.blit(pygame.image.load('assets/treasure chest0000.png'), (false_x1, false_y1))
                     wrong_x1 = false_x1
                     wrong_y1 = false_y1
 
@@ -258,12 +265,14 @@ while run:  # Only include critical code within this loop
 
                 # If False Treasure Location 2 is the same as Treasure, draw Alternate location at (0, -x)
                 if ((treasure_x != false_x2) or (treasure_y == false_y2)):
-                    pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2A, false_y2A, GRID_SIZE, GRID_SIZE))
+                    #pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2A, false_y2A, GRID_SIZE, GRID_SIZE))
+                    screen.blit(pygame.image.load('assets/treasure chest0000.png'), (false_x2A, false_y2A))
                     wrong_x2 = false_x2A
                     wrong_y2 = false_y2A
                 # Else draw False Treasure 2 location - Quadrant IV (x, -y)
                 else:
-                    pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2, false_y2, GRID_SIZE, GRID_SIZE))
+                    #pygame.draw.rect(screen, colors.blue, pygame.Rect(false_x2, false_y2, GRID_SIZE, GRID_SIZE))
+                    screen.blit(pygame.image.load('assets/treasure chest0000.png'), (false_x2, false_y2))
                     wrong_x2 = false_x2
                     wrong_y2 = false_y2
 
@@ -275,12 +284,14 @@ while run:  # Only include critical code within this loop
 
                 # If False Treasure Location 3 is the same as Treasure, draw Alternate location at (-x, -y)
                 if ((treasure_x == false_x3) or (treasure_y == false_y3)):
-                    pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3A, false_y3A, GRID_SIZE, GRID_SIZE))
+                    #pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3A, false_y3A, GRID_SIZE, GRID_SIZE))
+                    screen.blit(pygame.image.load('assets/treasure chest0000.png'), (false_x3A, false_y3A))
                     wrong_x3 = false_x3A
                     wrong_y3 = false_y3A
                 # Else draw False Treasure 3 location - Quadrant I (y, x)
                 else:
-                    pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3, false_y3, GRID_SIZE, GRID_SIZE))
+                    #pygame.draw.rect(screen, colors.black, pygame.Rect(false_x3, false_y3, GRID_SIZE, GRID_SIZE))
+                    screen.blit(pygame.image.load('assets/treasure chest0000.png'), (false_x3, false_y3))
                     wrong_x3 = false_x3
                     wrong_y3 = false_y3
 
@@ -314,7 +325,9 @@ while run:  # Only include critical code within this loop
             screen.blit(level_text, level_textRect)
 
             # Draw correct location for player to reflect
-            pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
+            #pygame.draw.rect(screen, colors.red, pygame.Rect(treasure_x, treasure_y, GRID_SIZE, GRID_SIZE))
+            screen.blit(pygame.image.load('assets/treasure chest0006.png'), (treasure_x, treasure_y))
+            screen.blit(pygame.image.load('assets/coins.png'), (GRID_SIZE, HEIGHT - 3 * GRID_SIZE))
 
         # Player has found false treasure
         elif (false_treasure == True):
@@ -325,8 +338,10 @@ while run:  # Only include critical code within this loop
             failure_textRect.center = (WIDTH // 2, GRID_SIZE)
             screen.blit(failure_text, failure_textRect)
 
-            # Draw incorrect location for player to understand
-            pygame.draw.rect(screen, colors.white, pygame.Rect(wrong_x, wrong_y, GRID_SIZE, GRID_SIZE))
+            # Draw incorrect location for player to understand mistake
+            #pygame.draw.rect(screen, colors.white, pygame.Rect(wrong_x, wrong_y, GRID_SIZE, GRID_SIZE))
+            screen.blit(pygame.image.load('assets/treasure chest0007.png'), (wrong_x, wrong_y))
+            screen.blit(pygame.image.load('assets/conda.png'), (wrong_x + GRID_SIZE, wrong_y + GRID_SIZE))
 
     click = False
     for event in pygame.event.get():
